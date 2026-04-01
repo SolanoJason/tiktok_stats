@@ -10,7 +10,7 @@ class TimeStampMixin(MappedAsDataclass, kw_only=True):
         DateTime(True),
         insert_default=lambda: datetime.now(UTC),  # Valor por defecto en Python
         server_default=func.now(),  # Valor por defecto en la base de datos
-        init=False,  # No se pasa en el constructor
+        init=True,  # No se pasa en el constructor
         repr=False  # No se muestra en la representación
     )
     # Fecha de actualización: se actualiza automáticamente al modificar el registro

@@ -1,1 +1,1 @@
-from .apify import client as apify_client, tiktok_actor as apify_tiktok_actor
+from .apify import client as apify_client, tiktok_actor as apify_tiktok_actor, client_sync as apify_client_sync, tiktok_actor_sync as apify_tiktok_actor_sync

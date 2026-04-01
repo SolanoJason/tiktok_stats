@@ -1,10 +1,10 @@
-from sqlalchemy.engine import URL
+from sqlalchemy.engine import URL, create_engine
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncAttrs
 from contextlib import asynccontextmanager
 from core.settings import settings
 from sqlalchemy import MetaData
 from sqlalchemy.sql.sqltypes import JSON
-from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass
+from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass, sessionmaker
 
 url = URL.create(
     drivername=settings.DB_DRIVER,
@@ -25,9 +25,23 @@ engine = create_async_engine(
     pool_timeout=10,
 )
 
+
 SessionFactory = async_sessionmaker(engine, autoflush=False, expire_on_commit=False)
 
+sync_engine = create_engine(
+    url,
+    echo_pool=True,
+    pool_pre_ping=True,
+    pool_size=10,
+    max_overflow=10,
+    pool_recycle=1800,
+    pool_timeout=10,
+)
+
+SyncSessionFactory = sessionmaker(sync_engine, autoflush=False, expire_on_commit=False)
+
 metadata = MetaData()
+
 
 # Clase base para todos los modelos de la aplicación
 class Base(AsyncAttrs, MappedAsDataclass, DeclarativeBase, kw_only=True):

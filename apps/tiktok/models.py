@@ -61,7 +61,7 @@ class VideoStats(TimeStampMixin, Base):
         foreign_keys=video_id,
     )
 
-    raw_data_id: Mapped[int] = mapped_column(
+    raw_data_id: Mapped[int | None] = mapped_column(
         ForeignKey("raw_data.id"), default=None, repr=False
     )
-    raw_data: Mapped[RawData] = relationship(default=None, repr=False, cascade="save-update", foreign_keys=raw_data_id)
+    raw_data: Mapped[RawData | None] = relationship(default=None, repr=False, cascade="save-update", foreign_keys=raw_data_id)

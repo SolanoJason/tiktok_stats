@@ -1,4 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import computed_field
+from fastapi.templating import Jinja2Templates
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -21,5 +23,9 @@ class Settings(BaseSettings):
 
     TEMPLATES_DIR: str = "templates"
     STATIC_DIR: str = "static"
+
+    @property
+    def templates(self) -> Jinja2Templates:
+        return Jinja2Templates(directory=self.TEMPLATES_DIR)
 
 settings = Settings()

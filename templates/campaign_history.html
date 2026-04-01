@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+
+{% block title %}Historial de campaña{% endblock %}
+
+{% block content %}
+<div class="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-7xl">
+    <div class="mb-8">
+      <h1 class="text-3xl font-semibold text-slate-900">Historial de campaña</h1>
+      <p class="mt-2 text-sm text-slate-600">Resumen de métricas y análisis por video en la zona horaria America/Lima.</p>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <p class="text-sm font-medium text-slate-500">Total Reproducciones</p>
+        <p id="total-plays" class="mt-4 text-3xl font-semibold text-slate-900">0</p>
+      </div>
+      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <p class="text-sm font-medium text-slate-500">Total Compartidos</p>
+        <p id="total-shares" class="mt-4 text-3xl font-semibold text-slate-900">0</p>
+      </div>
+      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <p class="text-sm font-medium text-slate-500">Total Me gusta</p>
+        <p id="total-diggs" class="mt-4 text-3xl font-semibold text-slate-900">0</p>
+      </div>
+      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <p class="text-sm font-medium text-slate-500">Total Guardados</p>
+        <p id="total-collects" class="mt-4 text-3xl font-semibold text-slate-900">0</p>
+      </div>
+      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <p class="text-sm font-medium text-slate-500">Total Comentarios</p>
+        <p id="total-comments" class="mt-4 text-3xl font-semibold text-slate-900">0</p>
+      </div>
+      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <p class="text-sm font-medium text-slate-500">Total Reposteos</p>
+        <p id="total-reposts" class="mt-4 text-3xl font-semibold text-slate-900">0</p>
+      </div>
+    </div>
+
+    <div class="mt-10 grid gap-8 lg:grid-cols-2">
+      <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 class="text-xl font-semibold text-slate-900">Tendencia acumulada</h2>
+            <p class="mt-1 text-sm text-slate-500">Crecimiento de todas las métricas en la línea de tiempo de la campaña.</p>
+          </div>
+        </div>
+        <div class="mt-6">
+          <canvas id="cumulative-chart" height="320"></canvas>
+        </div>
+      </section>
+
+      <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 class="text-xl font-semibold text-slate-900">Análisis de video</h2>
+            <p class="mt-1 text-sm text-slate-500">Selecciona un video por Usuario o URL para inspeccionar su trayectoria.</p>
+          </div>
+          <div class="w-full sm:w-80">
+            <label class="block text-sm font-medium text-slate-700" for="video-selector">Video</label>
+            <select id="video-selector" class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200">
+              <option value="">Seleccione un video</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-6">
+          <canvas id="video-chart" height="320"></canvas>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script>
+const limaOffset = '-05:00';
+const apiEndpoint = '/api/tiktok/campaign/history';
+const metricKeys = ['plays', 'shares', 'diggs', 'collects', 'comments', 'reposts'];
+const metricLabels = {
+  plays: 'Reproducciones',
+  shares: 'Compartidos',
+  diggs: 'Me gusta',
+  collects: 'Guardados',
+  comments: 'Comentarios',
+  reposts: 'Reposteos',
+};
+const metricColors = {
+  plays: 'rgba(14, 165, 233, 0.8)',
+  shares: 'rgba(16, 185, 129, 0.8)',
+  diggs: 'rgba(249, 115, 22, 0.8)',
+  collects: 'rgba(168, 85, 247, 0.8)',
+  comments: 'rgba(239, 68, 68, 0.8)',
+  reposts: 'rgba(34, 197, 94, 0.8)',
+};
+
+function parseLimaDate(dateString) {
+  return new Date(`${dateString}T00:00:00${limaOffset}`);
+}
+
+function formatLabel(dateString) {
+  return new Intl.DateTimeFormat('es-PE', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'America/Lima',
+  }).format(parseLimaDate(dateString));
+}
+
+function buildDataset(metric, dataByDate) {
+  return {
+    label: metricLabels[metric],
+    data: dataByDate.map(item => ({ x: parseLimaDate(item.date), y: item[metric] })),
+    borderColor: metricColors[metric],
+    backgroundColor: metricColors[metric].replace('0.8', '0.2'),
+    tension: 0.25,
+    pointRadius: 3,
+    borderWidth: 2,
+  };
+}
+
+function aggregateByDate(rows) {
+  const map = new Map();
+  rows.forEach(row => {
+    if (!map.has(row.date_of_stats)) {
+      map.set(row.date_of_stats, {
+        date: row.date_of_stats,
+        plays: 0,
+        shares: 0,
+        diggs: 0,
+        collects: 0,
+        comments: 0,
+        reposts: 0,
+      });
+    }
+    const entry = map.get(row.date_of_stats);
+    metricKeys.forEach(key => {
+      entry[key] += Number(row[key] ?? 0);
+    });
+  });
+  return Array.from(map.values()).sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function buildVideoOptions(rows) {
+  const unique = new Map();
+  rows.forEach(row => {
+    const key = `${row.username} | ${row.url}`;
+    if (!unique.has(key)) {
+      unique.set(key, { username: row.username, url: row.url });
+    }
+  });
+  return Array.from(unique.entries()).map(([value, data]) => ({ value, label: `${data.username} — ${data.url}` }));
+}
+
+function updateSummaryCards(aggregateRows) {
+  const latest = aggregateRows.length > 0 ? aggregateRows[aggregateRows.length - 1] : {
+    plays: 0,
+    shares: 0,
+    diggs: 0,
+    collects: 0,
+    comments: 0,
+    reposts: 0,
+  };
+
+  document.getElementById('total-plays').textContent = Number(latest.plays).toLocaleString('es-PE');
+  document.getElementById('total-shares').textContent = Number(latest.shares).toLocaleString('es-PE');
+  document.getElementById('total-diggs').textContent = Number(latest.diggs).toLocaleString('es-PE');
+  document.getElementById('total-collects').textContent = Number(latest.collects).toLocaleString('es-PE');
+  document.getElementById('total-comments').textContent = Number(latest.comments).toLocaleString('es-PE');
+  document.getElementById('total-reposts').textContent = Number(latest.reposts).toLocaleString('es-PE');
+}
+
+function configureChart(canvasId, dataSets, title) {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  return new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: dataSets,
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: { boxWidth: 12, padding: 16 },
+        },
+        title: { display: !!title, text: title },
+        tooltip: {
+          mode: 'index',
+          intersect: false,
+          callbacks: {
+            label: context => `${context.dataset.label}: ${context.parsed.y.toLocaleString('es-PE')}`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            unit: 'day',
+            tooltipFormat: 'PPP',
+            displayFormats: {
+              day: 'dd MMM',
+            },
+          },
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: value => value.toLocaleString('es-PE'),
+          },
+        },
+      },
+    },
+  });
+}
+
+async function loadCampaignHistory() {
+  const response = await fetch(apiEndpoint, { cache: 'no-store' });
+  const rows = await response.json();
+
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return;
+  }
+
+  const aggregateRows = aggregateByDate(rows);
+  updateSummaryCards(aggregateRows);
+
+  const cumulativeDatasets = metricKeys.map(metric => buildDataset(metric, aggregateRows));
+  const cumulativeChart = configureChart('cumulative-chart', cumulativeDatasets);
+
+  const videoSelector = document.getElementById('video-selector');
+  const videoOptions = buildVideoOptions(rows);
+  videoOptions.forEach(option => {
+    const element = document.createElement('option');
+    element.value = option.value;
+    element.textContent = option.label;
+    videoSelector.appendChild(element);
+  });
+
+  const defaultVideoData = {
+    plays: 0,
+    shares: 0,
+    diggs: 0,
+    collects: 0,
+    comments: 0,
+    reposts: 0,
+  };
+
+  const videoChart = configureChart('video-chart', [
+    {
+      label: 'Selecciona un video para ver su trayectoria',
+      data: [],
+      borderColor: 'rgba(148, 163, 184, 0.8)',
+      backgroundColor: 'rgba(148, 163, 184, 0.35)',
+      tension: 0.25,
+      pointRadius: 3,
+    },
+  ]);
+
+  function updateVideoChart(selectedKey) {
+    if (!selectedKey) {
+      videoChart.data.datasets = [
+        {
+          label: 'Seleccione un video para comenzar',
+          data: [],
+          borderColor: 'rgba(148, 163, 184, 0.8)',
+          backgroundColor: 'rgba(148, 163, 184, 0.35)',
+          tension: 0.25,
+          pointRadius: 3,
+        },
+      ];
+      videoChart.update();
+      return;
+    }
+
+    const [selectedUsername, selectedUrl] = selectedKey.split(' | ');
+    const filtered = rows.filter(row => row.username === selectedUsername && row.url === selectedUrl);
+    const grouped = aggregateByDate(filtered);
+    const datasets = metricKeys.map(metric => buildDataset(metric, grouped));
+
+    videoChart.data.datasets = datasets;
+    videoChart.options.plugins.title.text = `Video: ${selectedUsername}`;
+    videoChart.update();
+  }
+
+  videoSelector.addEventListener('change', event => updateVideoChart(event.target.value));
+}
+
+window.addEventListener('DOMContentLoaded', loadCampaignHistory);
+</script>
+{% endblock %}
