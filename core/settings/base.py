@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import computed_field
 from fastapi.templating import Jinja2Templates
+from jinja2 import pass_context
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -10,6 +11,8 @@ class Settings(BaseSettings):
         frozen=True,
         extra="ignore"
     )
+
+    DEBUG: bool
 
     DB_DRIVER: str = "postgresql+psycopg"
     DB_HOST: str
@@ -26,6 +29,17 @@ class Settings(BaseSettings):
 
     @property
     def templates(self) -> Jinja2Templates:
-        return Jinja2Templates(directory=self.TEMPLATES_DIR)
+        templates = Jinja2Templates(directory=self.TEMPLATES_DIR)
+        
+        @pass_context
+        def custom_url_for(context, name, **path_params):
+            request = context.get('request')
+            url = request.url_for(name, **path_params)
+            if not self.DEBUG:
+                url = url.replace(port=81)
+            return str(url)
+        
+        templates.env.globals['url_for'] = custom_url_for
+        return templates
 
 settings = Settings()

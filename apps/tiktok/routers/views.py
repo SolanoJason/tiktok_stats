@@ -9,6 +9,6 @@ router = APIRouter(tags=["web"])
 
 templates = settings.templates
 
-@router.get("/campaign/history")
+@router.get("/")
 async def campaign_history_page(request: Request):
     return templates.TemplateResponse(request, "campaign_history.html", {})
