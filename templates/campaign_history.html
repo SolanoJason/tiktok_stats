@@ -5,9 +5,24 @@
 {% block content %}
 <div class="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-7xl">
-    <div class="mb-8">
+    <div class="">
       <h1 class="text-3xl font-semibold text-slate-900">Historial de campaña</h1>
       <p class="mt-2 text-sm text-slate-600">Resumen de métricas y análisis por video en la zona horaria America/Lima.</p>
+      <div class="mt-4 flex flex-col gap-3">
+        <div class="flex items-center gap-3">
+          <button id="update-button" class="inline-flex items-center gap-2 rounded-2xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-500/15 transition duration-200 ease-out hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600">
+            <span id="update-button-icon" class="inline-flex h-4 w-4 items-center justify-center text-white">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                <path d="M3 12a9 9 0 1 0 9-9" />
+                <polyline points="12 3 12 9 15 6" />
+              </svg>
+            </span>
+            <span id="update-button-text">Actualizar métricas</span>
+          </button>
+          <div id="toast-container" class="pointer-events-none fixed right-4 top-4 z-50 flex flex-col gap-3"></div>
+        </div>
+        <p id="update-message" class="mt-2 text-sm text-slate-500 opacity-0 transition-opacity duration-200"></p>
+      </div>
     </div>
 
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -94,6 +109,9 @@ const metricColors = {
   reposts: 'rgba(34, 197, 94, 0.8)',
 };
 
+let cumulativeChart = null;
+let videoChart = null;
+
 function parseLimaDate(dateString) {
   return new Date(`${dateString}T00:00:00${limaOffset}`);
 }
@@ -171,8 +189,14 @@ function updateSummaryCards(aggregateRows) {
 }
 
 function configureChart(canvasId, dataSets, title) {
-  const ctx = document.getElementById(canvasId).getContext('2d');
-  return new Chart(ctx, {
+  const canvas = document.getElementById(canvasId);
+  const existingChart = Chart.getChart(canvas);
+  if (existingChart) {
+    existingChart.destroy();
+  }
+
+  const ctx = canvas.getContext('2d');
+  const chart = new Chart(ctx, {
     type: 'line',
     data: {
       datasets: dataSets,
@@ -214,6 +238,15 @@ function configureChart(canvasId, dataSets, title) {
       },
     },
   });
+
+  if (canvasId === 'cumulative-chart') {
+    cumulativeChart = chart;
+  }
+  if (canvasId === 'video-chart') {
+    videoChart = chart;
+  }
+
+  return chart;
 }
 
 async function loadCampaignHistory() {
@@ -231,6 +264,7 @@ async function loadCampaignHistory() {
   const cumulativeChart = configureChart('cumulative-chart', cumulativeDatasets);
 
   const videoSelector = document.getElementById('video-selector');
+  videoSelector.innerHTML = '<option value="">Seleccione un video</option>';
   const videoOptions = buildVideoOptions(rows);
   videoOptions.forEach(option => {
     const element = document.createElement('option');
@@ -287,6 +321,100 @@ async function loadCampaignHistory() {
 
   videoSelector.addEventListener('change', event => updateVideoChart(event.target.value));
 }
+
+function showToast(message, type = 'success') {
+  const toastContainer = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `max-w-xs rounded-2xl border px-4 py-3 text-sm shadow-xl shadow-slate-900/10 transition duration-200 ${type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-rose-200 bg-rose-50 text-rose-900'}`;
+  toast.innerHTML = `
+    <div class="flex items-center gap-2">
+      <span class="inline-flex h-5 w-5 items-center justify-center rounded-full ${type === 'success' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
+        ${type === 'success' ? '✓' : '⚠'}
+      </span>
+      <span>${message}</span>
+    </div>
+  `;
+  toastContainer.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('opacity-0');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+function setLoadingState(button, icon, text) {
+  button.disabled = true;
+  button.classList.remove('bg-sky-600', 'hover:bg-sky-700', 'bg-emerald-600', 'hover:bg-emerald-700');
+  button.classList.add('bg-slate-300', 'text-slate-700');
+  icon.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 animate-spin">
+      <path d="M3 12a9 9 0 1 0 9-9" />
+      <polyline points="12 3 12 9 15 6" />
+    </svg>
+  `;
+  text.textContent = 'Actualizando...';
+}
+
+function setSuccessState(button, icon, text) {
+  button.disabled = true;
+  button.classList.remove('bg-sky-600', 'hover:bg-sky-700', 'bg-slate-300', 'text-slate-700');
+  button.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');
+  icon.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+      <path d="M5 13l4 4L19 7" />
+    </svg>
+  `;
+  text.textContent = 'Actualizado';
+}
+
+function setDefaultButtonState(button, icon, text) {
+  button.disabled = false;
+  button.classList.remove('bg-slate-300', 'text-slate-700', 'bg-emerald-600', 'hover:bg-emerald-700');
+  button.classList.add('bg-sky-600', 'text-white');
+  icon.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+      <path d="M3 12a9 9 0 1 0 9-9" />
+      <polyline points="12 3 12 9 15 6" />
+    </svg>
+  `;
+  text.textContent = 'Actualizar métricas';
+}
+
+async function updateVideos() {
+  const button = document.getElementById('update-button');
+  const icon = document.getElementById('update-button-icon');
+  const buttonText = document.getElementById('update-button-text');
+  const message = document.getElementById('update-message');
+
+  message.textContent = '';
+  message.className = 'mt-2 text-sm text-slate-500 opacity-0 transition-opacity duration-200';
+  setLoadingState(button, icon, buttonText);
+
+  try {
+    const response = await fetch('/api/tiktok/update-videos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      setSuccessState(button, icon, buttonText);
+      showToast(result.message || 'Métricas actualizadas exitosamente.', 'success');
+      await loadCampaignHistory();
+      setTimeout(() => setDefaultButtonState(button, icon, buttonText), 2000);
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Error desconocido');
+    }
+  } catch (error) {
+      showToast(error.message, 'error');
+      setTimeout(() => setDefaultButtonState(button, icon, buttonText), 2000);
+  }
+}
+
+document.getElementById('update-button').addEventListener('click', updateVideos);
 
 window.addEventListener('DOMContentLoaded', loadCampaignHistory);
 </script>
