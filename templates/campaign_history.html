@@ -5,79 +5,135 @@
 {% block content %}
 <div class="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
   <div class="mx-auto max-w-7xl">
-    <div class="">
-      <h1 class="text-3xl font-semibold text-slate-900">Historial de campaña</h1>
-      <p class="mt-2 text-sm text-slate-600">Resumen de métricas y análisis por video en la zona horaria America/Lima.</p>
-      <div class="mt-4 flex flex-col gap-3">
-        <div class="flex items-center gap-3">
-          <button id="update-button" class="inline-flex items-center gap-2 rounded-2xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-500/15 transition duration-200 ease-out hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600">
-            <span id="update-button-icon" class="inline-flex h-4 w-4 items-center justify-center text-white">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-                <path d="M3 12a9 9 0 1 0 9-9" />
-                <polyline points="12 3 12 9 15 6" />
-              </svg>
-            </span>
-            <span id="update-button-text">Actualizar métricas</span>
-          </button>
-          <div id="toast-container" class="pointer-events-none fixed right-4 top-4 z-50 flex flex-col gap-3"></div>
-        </div>
-        <p id="update-message" class="mt-2 text-sm text-slate-500 opacity-0 transition-opacity duration-200"></p>
+    <div class="flex items-start justify-between mb-6">
+      <div>
+        <h1 class="text-3xl font-semibold text-slate-900">Historial de campaña</h1>
+        <p class="mt-2 text-sm text-slate-600">Resumen de métricas y análisis por video en la zona horaria America/Lima.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="update-button" class="inline-flex items-center gap-2 rounded-2xl bg-slate-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-slate-500/15 transition duration-200 ease-out hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600">
+          <span id="update-button-icon" class="inline-flex h-4 w-4 items-center justify-center text-white">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+              <path d="M3 12a9 9 0 1 0 9-9" />
+              <polyline points="12 3 12 9 15 6" />
+            </svg>
+          </span>
+          <span id="update-button-text">Actualizar</span>
+        </button>
+        <div id="toast-container" class="pointer-events-none fixed right-4 top-4 z-50 flex flex-col gap-3"></div>
       </div>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <p class="text-sm font-medium text-slate-500">Total Reproducciones</p>
-        <p id="total-plays" class="mt-4 text-3xl font-semibold text-slate-900">0</p>
+    <div class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-6">
+      <div class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
+        <p class="text-xs font-semibold tracking-[0.12em] text-slate-500">Total Reproducciones</p>
+        <p id="total-plays" class="mt-2 text-2xl font-semibold text-slate-900">0</p>
       </div>
-      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <p class="text-sm font-medium text-slate-500">Total Compartidos</p>
-        <p id="total-shares" class="mt-4 text-3xl font-semibold text-slate-900">0</p>
+      <div class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
+        <p class="text-xs font-semibold tracking-[0.12em] text-slate-500">Total Compartidos</p>
+        <p id="total-shares" class="mt-2 text-2xl font-semibold text-slate-900">0</p>
       </div>
-      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <p class="text-sm font-medium text-slate-500">Total Me gusta</p>
-        <p id="total-diggs" class="mt-4 text-3xl font-semibold text-slate-900">0</p>
+      <div class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
+        <p class="text-xs font-semibold tracking-[0.12em] text-slate-500">Total Me gusta</p>
+        <p id="total-diggs" class="mt-2 text-2xl font-semibold text-slate-900">0</p>
       </div>
-      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <p class="text-sm font-medium text-slate-500">Total Guardados</p>
-        <p id="total-collects" class="mt-4 text-3xl font-semibold text-slate-900">0</p>
+      <div class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
+        <p class="text-xs font-semibold tracking-[0.12em] text-slate-500">Total Guardados</p>
+        <p id="total-collects" class="mt-2 text-2xl font-semibold text-slate-900">0</p>
       </div>
-      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <p class="text-sm font-medium text-slate-500">Total Comentarios</p>
-        <p id="total-comments" class="mt-4 text-3xl font-semibold text-slate-900">0</p>
+      <div class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
+        <p class="text-xs font-semibold tracking-[0.12em] text-slate-500">Total Comentarios</p>
+        <p id="total-comments" class="mt-2 text-2xl font-semibold text-slate-900">0</p>
+      </div>
+      <div class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
+        <p class="text-xs font-semibold tracking-[0.12em] text-slate-500">Número total de videos</p>
+        <p id="total-videos" class="mt-2 text-2xl font-semibold text-slate-900">0</p>
       </div>
     </div>
 
-    <div class="mt-10 grid gap-8 lg:grid-cols-2">
-      <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 class="text-xl font-semibold text-slate-900">Tendencia acumulada</h2>
-            <p class="mt-1 text-sm text-slate-500">Crecimiento de todas las métricas en la línea de tiempo de la campaña.</p>
+    <div class="mt-10 grid gap-8 lg:grid-cols-2 items-stretch">
+      <!-- Columna Izquierda: Gráficos (50%) -->
+      <div class="space-y-8">
+        <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 class="text-xl font-semibold text-slate-900">Tendencia acumulada</h2>
+              <p class="mt-1 text-sm text-slate-500">Crecimiento de todas las métricas en la línea de tiempo de la campaña.</p>
+            </div>
           </div>
-        </div>
-        <div class="mt-6">
-          <canvas id="cumulative-chart" height="320"></canvas>
-        </div>
-      </section>
+                <div class="mt-6" style="height: 250px;">
+                  <canvas id="cumulative-chart" class="h-full w-full"></canvas>
+                </div>
+        </section>
 
-      <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 class="text-xl font-semibold text-slate-900">Análisis de video</h2>
-            <p class="mt-1 text-sm text-slate-500">Selecciona un video por Usuario o URL para inspeccionar su trayectoria.</p>
+        <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 class="text-xl font-semibold text-slate-900">Análisis de video</h2>
+              <p class="mt-1 text-sm text-slate-500">Selecciona un video por Usuario o URL para inspeccionar su trayectoria.</p>
+            </div>
+            <div class="w-full sm:w-80">
+              <label class="block text-sm font-medium text-slate-700" for="video-selector">Video</label>
+              <select id="video-selector" class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200">
+                <option value="">Seleccione un video</option>
+              </select>
+            </div>
           </div>
-          <div class="w-full sm:w-80">
-            <label class="block text-sm font-medium text-slate-700" for="video-selector">Video</label>
-            <select id="video-selector" class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200">
-              <option value="">Seleccione un video</option>
-            </select>
+          <div class="mt-6" style="height: 250px;">
+            <canvas id="video-chart" class="h-full w-full"></canvas>
           </div>
-        </div>
-        <div class="mt-6">
-          <canvas id="video-chart" height="320"></canvas>
-        </div>
-      </section>
+        </section>
+      </div>
+
+      <!-- Columna Derecha: Ranking de Videos (50%) -->
+      <div class="">
+        <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 flex flex-col h-200">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 class="text-xl font-semibold text-slate-900">Ranking por Reproducciones</h2>
+              <p class="mt-1 text-sm text-slate-500">Videos ordenados por número de reproducciones.</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="flex-1 min-w-0">
+                <input
+                  id="video-url-input"
+                  type="url"
+                  placeholder="https://www.tiktok.com/@usuario/video/123456789"
+                  class="min-w-0 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                />
+              </div>
+              <button id="add-video-button" class="inline-flex flex-shrink-0 items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2 h-10 w-10 text-sm font-semibold text-white shadow-lg shadow-emerald-500/15 transition duration-200 ease-out hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-600" title="Agregar video">
+                <span id="add-video-button-icon" class="inline-flex h-4 w-4 items-center justify-center text-white">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                </span>
+                <span id="add-video-button-text" class="sr-only">Agregar video</span>
+              </button>
+            </div>
+          </div>
+            <div class="mt-6 flex-1 overflow-auto">
+            <table class="w-full text-sm">
+              <thead class="border-b border-slate-200 sticky top-0 bg-white">
+                <tr>
+                  <th class="text-left py-3 px-4 font-semibold text-slate-700">#</th>
+                  <th class="text-left py-3 px-4 font-semibold text-slate-700">Usuario</th>
+                  <th class="text-right py-3 px-4 font-semibold text-slate-700">Reproducciones</th>
+                  <th class="text-right py-3 px-4 font-semibold text-slate-700">Me gusta</th>
+                  <th class="text-right py-3 px-4 font-semibold text-slate-700">Compartidos</th>
+                  <th class="text-right py-3 px-4 font-semibold text-slate-700">Guardados</th>
+                  <th class="text-right py-3 px-4 font-semibold text-slate-700">Comentarios</th>
+                </tr>
+              </thead>
+              <tbody id="videos-ranking" class="divide-y divide-slate-200">
+                <tr class="text-center py-8">
+                  <td colspan="7" class="text-slate-500">Cargando videos...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
     </div>
   </div>
 </div>
@@ -163,8 +219,8 @@ function buildVideoOptions(rows) {
   return Array.from(unique.entries()).map(([value, data]) => ({ value, label: `${data.username} — ${data.url}` }));
 }
 
-function updateSummaryCards(aggregateRows) {
-  const latest = aggregateRows.length > 0 ? aggregateRows[aggregateRows.length - 1] : {
+function updateSummaryCards(totals, totalVideos = 0) {
+  const latest = totals || {
     plays: 0,
     shares: 0,
     diggs: 0,
@@ -177,6 +233,30 @@ function updateSummaryCards(aggregateRows) {
   document.getElementById('total-diggs').textContent = Number(latest.diggs).toLocaleString('es-PE');
   document.getElementById('total-collects').textContent = Number(latest.collects).toLocaleString('es-PE');
   document.getElementById('total-comments').textContent = Number(latest.comments).toLocaleString('es-PE');
+  document.getElementById('total-videos').textContent = Number(totalVideos).toLocaleString('es-PE');
+}
+
+function calculateCampaignTotals(rows) {
+  const latestPerVideo = new Map();
+
+  rows.forEach(row => {
+    const key = row.url;
+    const existing = latestPerVideo.get(key);
+    if (!existing || row.date_of_stats > existing.date_of_stats) {
+      latestPerVideo.set(key, row);
+    }
+  });
+
+  return Array.from(latestPerVideo.values()).reduce(
+    (acc, row) => ({
+      plays: acc.plays + Number(row.plays || 0),
+      shares: acc.shares + Number(row.shares || 0),
+      diggs: acc.diggs + Number(row.diggs || 0),
+      collects: acc.collects + Number(row.collects || 0),
+      comments: acc.comments + Number(row.comments || 0),
+    }),
+    { plays: 0, shares: 0, diggs: 0, collects: 0, comments: 0 }
+  );
 }
 
 function configureChart(canvasId, dataSets, title) {
@@ -240,6 +320,36 @@ function configureChart(canvasId, dataSets, title) {
   return chart;
 }
 
+function selectVideoFromTable(videoUrl, username) {
+  // Remover highlight de filas anteriores
+  document.querySelectorAll('.video-row').forEach(row => {
+    row.classList.remove('bg-blue-50');
+  });
+
+  // Agregar highlight a la fila actual
+  const rowToHighlight = Array.from(document.querySelectorAll('.video-row')).find(
+    row => row.dataset.url === videoUrl && row.dataset.username === username
+  );
+  
+  if (rowToHighlight) {
+    rowToHighlight.classList.add('bg-blue-50');
+  }
+
+  // Buscar el video en el selector
+  const videoSelector = document.getElementById('video-selector');
+  const options = Array.from(videoSelector.options);
+  
+  const matchingOption = options.find(option => {
+    return option.value.includes(username) && option.value.includes(videoUrl);
+  });
+
+  if (matchingOption) {
+    videoSelector.value = matchingOption.value;
+    // Trigger change event para actualizar el gráfico
+    videoSelector.dispatchEvent(new Event('change'));
+  }
+}
+
 async function loadCampaignHistory() {
   const response = await fetch(apiEndpoint, { cache: 'no-store' });
   const rows = await response.json();
@@ -249,7 +359,9 @@ async function loadCampaignHistory() {
   }
 
   const aggregateRows = aggregateByDate(rows);
-  updateSummaryCards(aggregateRows);
+  const totalVideos = new Set(rows.map(row => row.url)).size;
+  const totals = calculateCampaignTotals(rows);
+  updateSummaryCards(totals, totalVideos);
 
   const cumulativeDatasets = metricKeys.map(metric => buildDataset(metric, aggregateRows));
   const cumulativeChart = configureChart('cumulative-chart', cumulativeDatasets);
@@ -262,6 +374,23 @@ async function loadCampaignHistory() {
     element.value = option.value;
     element.textContent = option.label;
     videoSelector.appendChild(element);
+  });
+
+  // Encontrar el video con mayor rendimiento
+  let bestVideoKey = '';
+  let bestScore = 0;
+  
+  videoOptions.forEach(option => {
+    const [username, url] = option.value.split(' | ');
+    const filtered = rows.filter(row => row.username === username && row.url === url);
+    const totalStats = filtered.reduce((acc, row) => {
+      return acc + (row.plays || 0) + (row.diggs || 0) + (row.shares || 0);
+    }, 0);
+    
+    if (totalStats > bestScore) {
+      bestScore = totalStats;
+      bestVideoKey = option.value;
+    }
   });
 
   const defaultVideoData = {
@@ -284,6 +413,11 @@ async function loadCampaignHistory() {
   ]);
 
   function updateVideoChart(selectedKey) {
+    // Remover highlight de filas
+    document.querySelectorAll('.video-row').forEach(row => {
+      row.classList.remove('bg-blue-50');
+    });
+
     if (!selectedKey) {
       videoChart.data.datasets = [
         {
@@ -300,6 +434,15 @@ async function loadCampaignHistory() {
     }
 
     const [selectedUsername, selectedUrl] = selectedKey.split(' | ');
+    
+    // Resaltar la fila correspondiente en la tabla
+    const matchingRow = Array.from(document.querySelectorAll('.video-row')).find(
+      row => row.dataset.url === selectedUrl && row.dataset.username === selectedUsername
+    );
+    if (matchingRow) {
+      matchingRow.classList.add('bg-blue-50');
+    }
+    
     const filtered = rows.filter(row => row.username === selectedUsername && row.url === selectedUrl);
     const grouped = aggregateByDate(filtered);
     const datasets = metricKeys.map(metric => buildDataset(metric, grouped));
@@ -307,6 +450,12 @@ async function loadCampaignHistory() {
     videoChart.data.datasets = datasets;
     videoChart.options.plugins.title.text = `Video: ${selectedUsername}`;
     videoChart.update();
+  }
+
+  // Seleccionar y mostrar el video con mejor rendimiento por defecto
+  if (bestVideoKey) {
+    videoSelector.value = bestVideoKey;
+    updateVideoChart(bestVideoKey);
   }
 
   videoSelector.addEventListener('change', event => updateVideoChart(event.target.value));
@@ -334,7 +483,7 @@ function showToast(message, type = 'success') {
 
 function setLoadingState(button, icon, text) {
   button.disabled = true;
-  button.classList.remove('bg-sky-600', 'hover:bg-sky-700', 'bg-emerald-600', 'hover:bg-emerald-700');
+  button.classList.remove('bg-slate-600', 'hover:bg-slate-700', 'bg-emerald-600', 'hover:bg-emerald-700');
   button.classList.add('bg-slate-300', 'text-slate-700');
   icon.innerHTML = `
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 animate-spin">
@@ -347,7 +496,7 @@ function setLoadingState(button, icon, text) {
 
 function setSuccessState(button, icon, text) {
   button.disabled = true;
-  button.classList.remove('bg-sky-600', 'hover:bg-sky-700', 'bg-slate-300', 'text-slate-700');
+  button.classList.remove('bg-slate-600', 'hover:bg-slate-700', 'bg-slate-300', 'text-slate-700');
   button.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');
   icon.innerHTML = `
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
@@ -360,24 +509,99 @@ function setSuccessState(button, icon, text) {
 function setDefaultButtonState(button, icon, text) {
   button.disabled = false;
   button.classList.remove('bg-slate-300', 'text-slate-700', 'bg-emerald-600', 'hover:bg-emerald-700');
-  button.classList.add('bg-sky-600', 'text-white');
+  button.classList.add('bg-slate-600', 'text-white');
   icon.innerHTML = `
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
       <path d="M3 12a9 9 0 1 0 9-9" />
       <polyline points="12 3 12 9 15 6" />
     </svg>
   `;
-  text.textContent = 'Actualizar métricas';
+  text.textContent = 'Actualizar';
+}
+
+function setAddVideoLoadingState(button, icon, text) {
+  button.disabled = true;
+  button.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+  button.classList.add('bg-slate-300', 'text-slate-700');
+  icon.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 animate-spin">
+      <path d="M3 12a9 9 0 1 0 9-9" />
+      <polyline points="12 3 12 9 15 6" />
+    </svg>
+  `;
+  text.textContent = 'Agregando...';
+}
+
+function setAddVideoSuccessState(button, icon, text) {
+  button.disabled = true;
+  button.classList.remove('bg-slate-300', 'text-slate-700');
+  button.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');
+  icon.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+      <path d="M5 13l4 4L19 7" />
+    </svg>
+  `;
+  text.textContent = 'Agregado';
+}
+
+function setAddVideoDefaultState(button, icon, text) {
+  button.disabled = false;
+  button.classList.remove('bg-slate-300', 'text-slate-700');
+  button.classList.add('bg-emerald-600', 'text-white');
+  icon.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  `;
+  text.textContent = 'Agregar video';
+}
+
+async function addVideo() {
+  const button = document.getElementById('add-video-button');
+  const icon = document.getElementById('add-video-button-icon');
+  const buttonText = document.getElementById('add-video-button-text');
+  const urlInput = document.getElementById('video-url-input');
+  const url = urlInput.value.trim();
+
+  if (!url) {
+    showToast('Por favor ingresa una URL de TikTok.', 'error');
+    return;
+  }
+
+  setAddVideoLoadingState(button, icon, buttonText);
+
+  try {
+    const response = await fetch('/api/tiktok/videos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ url: url }),
+    });
+
+      if (response.ok) {
+      await response.json();
+      setAddVideoSuccessState(button, icon, buttonText);
+      showToast('Video agregado exitosamente.', 'success');
+      urlInput.value = ''; // Limpiar el input
+      await loadVideosList(); // Recargar ranking
+      await loadCampaignHistory(); // Recargar los datos y gráficos
+      setTimeout(() => setAddVideoDefaultState(button, icon, buttonText), 2000);
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Error desconocido');
+    }
+  } catch (error) {
+    showToast(error.message, 'error');
+    setTimeout(() => setAddVideoDefaultState(button, icon, buttonText), 2000);
+  }
 }
 
 async function updateVideos() {
   const button = document.getElementById('update-button');
   const icon = document.getElementById('update-button-icon');
   const buttonText = document.getElementById('update-button-text');
-  const message = document.getElementById('update-message');
 
-  message.textContent = '';
-  message.className = 'mt-2 text-sm text-slate-500 opacity-0 transition-opacity duration-200';
   setLoadingState(button, icon, buttonText);
 
   try {
@@ -392,6 +616,7 @@ async function updateVideos() {
       const result = await response.json();
       setSuccessState(button, icon, buttonText);
       showToast(result.message || 'Métricas actualizadas exitosamente.', 'success');
+      await loadVideosList(); // Recargar lista de videos
       await loadCampaignHistory();
       setTimeout(() => setDefaultButtonState(button, icon, buttonText), 2000);
     } else {
@@ -404,8 +629,165 @@ async function updateVideos() {
   }
 }
 
-document.getElementById('update-button').addEventListener('click', updateVideos);
+async function loadVideosList() {
+  try {
+    const response = await fetch('/api/tiktok/videos', { cache: 'no-store' });
+    const videos = await response.json();
 
-window.addEventListener('DOMContentLoaded', loadCampaignHistory);
+    const videosRanking = document.getElementById('videos-ranking');
+    
+    if (!Array.isArray(videos) || videos.length === 0) {
+      videosRanking.innerHTML = `
+        <tr class="text-center py-8">
+          <td colspan="7" class="text-slate-500">No hay videos registrados</td>
+        </tr>
+      `;
+      return;
+    }
+
+    // Ordenar videos por reproducciones (descendente)
+    const sortedVideos = videos.sort((a, b) => {
+      const playsA = a.last_stat ? Number(a.last_stat.plays) : 0;
+      const playsB = b.last_stat ? Number(b.last_stat.plays) : 0;
+      return playsB - playsA;
+    });
+
+    videosRanking.innerHTML = sortedVideos.map((video, index) => {
+      const stats = video.last_stat;
+      const plays = stats ? Number(stats.plays).toLocaleString('es-PE') : '0';
+      const diggs = stats ? Number(stats.diggs).toLocaleString('es-PE') : '0';
+      const shares = stats ? Number(stats.shares).toLocaleString('es-PE') : '0';
+      const collects = stats ? Number(stats.collects).toLocaleString('es-PE') : '0';
+      const comments = stats ? Number(stats.comments).toLocaleString('es-PE') : '0';
+      const username = video.url.split('/video/')[0].split('@')[1] || 'Video';
+      const rank = index + 1;
+      
+      return `
+        <tr class="hover:bg-slate-50 transition-colors cursor-pointer video-row" data-url="${video.url}" data-username="${username}">
+          <td class="py-4 px-4">
+            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-sm font-semibold text-slate-700">
+              ${rank}
+            </div>
+          </td>
+          <td class="py-4 px-4">
+            <a href="${video.url}" target="_blank" class="text-sky-600 hover:text-sky-700 font-medium" onclick="event.stopPropagation()">
+              ${username}
+            </a>
+          </td>
+          <td class="text-right py-4 px-4 font-semibold text-slate-900">${plays}</td>
+          <td class="text-right py-4 px-4 font-semibold text-slate-900">${diggs}</td>
+          <td class="text-right py-4 px-4 font-semibold text-slate-900">${shares}</td>
+          <td class="text-right py-4 px-4 font-semibold text-slate-900">${collects}</td>
+          <td class="text-right py-4 px-4 font-semibold text-slate-900">${comments}</td>
+        </tr>
+      `;
+    }).join('');
+
+    // Agregar event listeners a las filas
+    document.querySelectorAll('.video-row').forEach(row => {
+      row.addEventListener('click', function() {
+        selectVideoFromTable(this.dataset.url, this.dataset.username);
+      });
+    });
+  } catch (error) {
+    console.error('Error loading videos:', error);
+    const videosRanking = document.getElementById('videos-ranking');
+    videosRanking.innerHTML = `
+      <tr class="text-center py-8">
+        <td colspan="7" class="text-red-500">Error al cargar los videos</td>
+      </tr>
+    `;
+  }
+}
+
+function appendVideoRow(video) {
+  const videosRanking = document.getElementById('videos-ranking');
+  const stats = video.last_stat;
+  const plays = stats ? Number(stats.plays) : 0;
+  const diggs = stats ? Number(stats.diggs).toLocaleString('es-PE') : '0';
+  const shares = stats ? Number(stats.shares).toLocaleString('es-PE') : '0';
+  const collects = stats ? Number(stats.collects).toLocaleString('es-PE') : '0';
+  const comments = stats ? Number(stats.comments).toLocaleString('es-PE') : '0';
+  const username = video.url.split('/video/')[0].split('@')[1] || 'Video';
+
+  // Obtener todos los videos existentes
+  const existingRows = Array.from(document.querySelectorAll('.video-row')).map(row => ({
+    element: row,
+    plays: Number(row.cells[2]?.textContent?.replace(/[^\d]/g, '') || 0),
+    url: row.dataset.url,
+    username: row.dataset.username
+  }));
+
+  // Agregar el nuevo video
+  existingRows.push({
+    element: null, // Será creado
+    plays: plays,
+    url: video.url,
+    username: username
+  });
+
+  // Ordenar por reproducciones (descendente)
+  existingRows.sort((a, b) => b.plays - a.plays);
+
+  // Recrear la tabla completa
+  videosRanking.innerHTML = existingRows.map((item, index) => {
+    const rank = index + 1;
+    if (item.element && item.url === video.url) {
+      // Es el video nuevo, crear la fila
+      return `
+        <tr class="hover:bg-slate-50 transition-colors cursor-pointer video-row" data-url="${video.url}" data-username="${username}">
+          <td class="py-4 px-4">
+            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-sm font-semibold text-slate-700">
+              ${rank}
+            </div>
+          </td>
+          <td class="py-4 px-4">
+            <a href="${video.url}" target="_blank" class="text-sky-600 hover:text-sky-700 font-medium" onclick="event.stopPropagation()">
+              ${username}
+            </a>
+          </td>
+          <td class="text-right py-4 px-4 font-semibold text-slate-900">${plays.toLocaleString('es-PE')}</td>
+          <td class="text-right py-4 px-4 font-semibold text-slate-900">${diggs}</td>
+          <td class="text-right py-4 px-4 font-semibold text-slate-900">${shares}</td>
+          <td class="text-right py-4 px-4 font-semibold text-slate-900">${collects}</td>
+          <td class="text-right py-4 px-4 font-semibold text-slate-900">${comments}</td>
+        </tr>
+      `;
+    } else if (item.element) {
+      // Es una fila existente, actualizar el ranking
+      const rankCell = item.element.cells[0];
+      if (rankCell) {
+        rankCell.innerHTML = `
+          <div class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-sm font-semibold text-slate-700">
+            ${rank}
+          </div>
+        `;
+      }
+      return item.element.outerHTML;
+    }
+  }).join('');
+
+  // Agregar event listeners a las filas
+  document.querySelectorAll('.video-row').forEach(row => {
+    row.addEventListener('click', function() {
+      selectVideoFromTable(this.dataset.url, this.dataset.username);
+    });
+  });
+}
+
+document.getElementById('update-button').addEventListener('click', updateVideos);
+document.getElementById('add-video-button').addEventListener('click', addVideo);
+
+// Permitir agregar video con Enter en el input
+document.getElementById('video-url-input').addEventListener('keypress', function(event) {
+  if (event.key === 'Enter') {
+    addVideo();
+  }
+});
+
+window.addEventListener('DOMContentLoaded', async () => {
+  await loadVideosList();
+  await loadCampaignHistory();
+});
 </script>
 {% endblock %}
