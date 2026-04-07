@@ -46,10 +46,6 @@
         <p class="text-sm font-medium text-slate-500">Total Comentarios</p>
         <p id="total-comments" class="mt-4 text-3xl font-semibold text-slate-900">0</p>
       </div>
-      <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <p class="text-sm font-medium text-slate-500">Total Reposteos</p>
-        <p id="total-reposts" class="mt-4 text-3xl font-semibold text-slate-900">0</p>
-      </div>
     </div>
 
     <div class="mt-10 grid gap-8 lg:grid-cols-2">
@@ -91,14 +87,13 @@
 <script>
 const limaOffset = '-05:00';
 const apiEndpoint = '/api/tiktok/campaign/history';
-const metricKeys = ['plays', 'shares', 'diggs', 'collects', 'comments', 'reposts'];
+const metricKeys = ['plays', 'shares', 'diggs', 'collects', 'comments'];
 const metricLabels = {
   plays: 'Reproducciones',
   shares: 'Compartidos',
   diggs: 'Me gusta',
   collects: 'Guardados',
   comments: 'Comentarios',
-  reposts: 'Reposteos',
 };
 const metricColors = {
   plays: 'rgba(14, 165, 233, 0.8)',
@@ -106,7 +101,6 @@ const metricColors = {
   diggs: 'rgba(249, 115, 22, 0.8)',
   collects: 'rgba(168, 85, 247, 0.8)',
   comments: 'rgba(239, 68, 68, 0.8)',
-  reposts: 'rgba(34, 197, 94, 0.8)',
 };
 
 let cumulativeChart = null;
@@ -148,7 +142,6 @@ function aggregateByDate(rows) {
         diggs: 0,
         collects: 0,
         comments: 0,
-        reposts: 0,
       });
     }
     const entry = map.get(row.date_of_stats);
@@ -177,7 +170,6 @@ function updateSummaryCards(aggregateRows) {
     diggs: 0,
     collects: 0,
     comments: 0,
-    reposts: 0,
   };
 
   document.getElementById('total-plays').textContent = Number(latest.plays).toLocaleString('es-PE');
@@ -185,7 +177,6 @@ function updateSummaryCards(aggregateRows) {
   document.getElementById('total-diggs').textContent = Number(latest.diggs).toLocaleString('es-PE');
   document.getElementById('total-collects').textContent = Number(latest.collects).toLocaleString('es-PE');
   document.getElementById('total-comments').textContent = Number(latest.comments).toLocaleString('es-PE');
-  document.getElementById('total-reposts').textContent = Number(latest.reposts).toLocaleString('es-PE');
 }
 
 function configureChart(canvasId, dataSets, title) {
@@ -279,7 +270,6 @@ async function loadCampaignHistory() {
     diggs: 0,
     collects: 0,
     comments: 0,
-    reposts: 0,
   };
 
   const videoChart = configureChart('video-chart', [
