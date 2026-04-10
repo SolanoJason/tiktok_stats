@@ -42,4 +42,4 @@ class Settings(BaseSettings):
         templates.env.globals['url_for'] = custom_url_for
         return templates
 
-settings = Settings()
+settings = Settings() # type: ignore
