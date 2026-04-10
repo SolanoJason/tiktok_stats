@@ -35,24 +35,32 @@
       </div>
     </div>
 
-    <div class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-6">
-      <div class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
+    <div class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-7">
+      <div data-overview-metric="plays" class="summary-metric-card cursor-pointer rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
         <p class="text-xs font-semibold tracking-[0.12em] text-slate-500">Total Reproducciones</p>
         <p id="total-plays" class="mt-2 text-2xl font-semibold text-slate-900">0</p>
       </div>
-      <div class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
+      <div data-overview-metric="interactions" class="summary-metric-card cursor-pointer rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
+        <p class="text-xs font-semibold tracking-[0.12em] text-slate-500">Total Interacciones</p>
+        <p id="total-interactions" class="mt-2 text-2xl font-semibold text-slate-900">0</p>
+      </div>
+      <div data-overview-metric="engagement" class="summary-metric-card cursor-pointer rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
+        <p class="text-xs font-semibold tracking-[0.12em] text-slate-500">Engagement Total</p>
+        <p id="total-engagement" class="mt-2 text-2xl font-semibold text-slate-900">0%</p>
+      </div>
+      <div data-overview-metric="shares" class="summary-metric-card cursor-pointer rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
         <p class="text-xs font-semibold tracking-[0.12em] text-slate-500">Total Compartidos</p>
         <p id="total-shares" class="mt-2 text-2xl font-semibold text-slate-900">0</p>
       </div>
-      <div class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
+      <div data-overview-metric="diggs" class="summary-metric-card cursor-pointer rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
         <p class="text-xs font-semibold tracking-[0.12em] text-slate-500">Total Me gusta</p>
         <p id="total-diggs" class="mt-2 text-2xl font-semibold text-slate-900">0</p>
       </div>
-      <div class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
+      <div data-overview-metric="collects" class="summary-metric-card cursor-pointer rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
         <p class="text-xs font-semibold tracking-[0.12em] text-slate-500">Total Guardados</p>
         <p id="total-collects" class="mt-2 text-2xl font-semibold text-slate-900">0</p>
       </div>
-      <div class="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
+      <div data-overview-metric="comments" class="summary-metric-card cursor-pointer rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-shadow duration-200 hover:shadow-xl">
         <p class="text-xs font-semibold tracking-[0.12em] text-slate-500">Total Comentarios</p>
         <p id="total-comments" class="mt-2 text-2xl font-semibold text-slate-900">0</p>
       </div>
@@ -132,6 +140,8 @@
                   <th class="text-left py-3 px-4 font-semibold text-slate-700">#</th>
                   <th class="text-left py-3 px-4 font-semibold text-slate-700">Usuario</th>
                   <th class="text-right py-3 px-4 font-semibold text-slate-700">Reproducciones</th>
+                  <th class="text-right py-3 px-4 font-semibold text-slate-700">Interacciones</th>
+                  <th class="text-right py-3 px-4 font-semibold text-slate-700">Engagement</th>
                   <th class="text-right py-3 px-4 font-semibold text-slate-700">Me gusta</th>
                   <th class="text-right py-3 px-4 font-semibold text-slate-700">Compartidos</th>
                   <th class="text-right py-3 px-4 font-semibold text-slate-700">Guardados</th>
@@ -140,7 +150,7 @@
               </thead>
               <tbody id="videos-ranking" class="divide-y divide-slate-200">
                 <tr class="text-center py-8">
-                  <td colspan="7" class="text-slate-500">Cargando videos...</td>
+                  <td colspan="9" class="text-slate-500">Cargando videos...</td>
                 </tr>
               </tbody>
             </table>
@@ -156,9 +166,11 @@
 <script>
 const limaOffset = '-05:00';
 const apiEndpoint = '/api/tiktok/campaign/history';
-const metricKeys = ['plays', 'shares', 'diggs', 'collects', 'comments'];
+const metricKeys = ['plays', 'interactions', 'shares', 'diggs', 'collects', 'comments'];
 const metricLabels = {
   plays: 'Reproducciones',
+  interactions: 'Interacciones',
+  engagement: 'Engagement',
   shares: 'Compartidos',
   diggs: 'Me gusta',
   collects: 'Guardados',
@@ -166,6 +178,8 @@ const metricLabels = {
 };
 const metricColors = {
   plays: 'rgba(14, 165, 233, 0.8)',
+  interactions: 'rgba(139, 92, 246, 0.8)',
+  engagement: 'rgba(14, 116, 144, 0.8)',
   shares: 'rgba(16, 185, 129, 0.8)',
   diggs: 'rgba(249, 115, 22, 0.8)',
   collects: 'rgba(168, 85, 247, 0.8)',
@@ -177,6 +191,7 @@ let videoChart = null;
 let allCampaignRows = [];
 let visibleRows = [];
 let selectedMonthKeys = new Set();
+let selectedOverviewMetrics = new Set(['plays', 'interactions', 'engagement']);
 let selectedVideoKey = '';
 let availableMonthKeys = [];
 let monthSelectionInitialized = false;
@@ -472,13 +487,71 @@ function formatLabel(dateString) {
 function buildDataset(metric, dataByDate) {
   return {
     label: metricLabels[metric],
+    metricKey: metric,
     data: dataByDate.map(item => ({ x: parseLimaDate(item.date), y: item[metric] })),
     borderColor: metricColors[metric],
     backgroundColor: metricColors[metric].replace('0.8', '0.2'),
     tension: 0.25,
     pointRadius: 3,
     borderWidth: 2,
+    yAxisID: metric === 'engagement' ? 'yPercent' : 'y',
   };
+}
+
+function buildEngagementDataset(dataByDate) {
+  return {
+    label: 'Engagement',
+    metricKey: 'engagement',
+    data: dataByDate.map(item => ({ x: parseLimaDate(item.date), y: item.engagement })),
+    borderColor: metricColors.engagement,
+    backgroundColor: metricColors.engagement.replace('0.8', '0.2'),
+    tension: 0.25,
+    pointRadius: 3,
+    borderWidth: 2,
+    yAxisID: 'yPercent',
+  };
+}
+
+function formatChartValue(metricKey, value) {
+  if (metricKey === 'engagement') {
+    return `${Number(value || 0).toFixed(2)}%`;
+  }
+
+  return Number(value || 0).toLocaleString('es-PE');
+}
+
+function getVisibleOverviewMetricKeys() {
+  if (!selectedOverviewMetrics.size) {
+    return metricKeys;
+  }
+
+  return Array.from(selectedOverviewMetrics);
+}
+
+function syncOverviewMetricCards() {
+  document.querySelectorAll('[data-overview-metric]').forEach(card => {
+    const isActive = selectedOverviewMetrics.has(card.dataset.overviewMetric);
+    card.classList.toggle('ring-2', isActive);
+    card.classList.toggle('ring-sky-500', isActive);
+    card.classList.toggle('bg-sky-50', isActive);
+    card.classList.toggle('border', isActive);
+    card.classList.toggle('border-sky-200', isActive);
+    card.classList.toggle('ring-1', !isActive);
+    card.classList.toggle('ring-slate-200', !isActive);
+    card.classList.toggle('bg-white', !isActive);
+    card.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function applyOverviewMetricSelection(metricKey) {
+  if (selectedOverviewMetrics.has(metricKey)) {
+    selectedOverviewMetrics.delete(metricKey);
+  } else {
+    selectedOverviewMetrics.add(metricKey);
+  }
+
+  syncOverviewMetricCards();
+  renderCampaignDashboard();
 }
 
 function aggregateByDate(rows) {
@@ -492,12 +565,24 @@ function aggregateByDate(rows) {
         diggs: 0,
         collects: 0,
         comments: 0,
+        interactions: 0,
+        engagement: 0,
       });
     }
     const entry = map.get(row.date_of_stats);
-    metricKeys.forEach(key => {
-      entry[key] += Number(row[key] ?? 0);
-    });
+    const shares = Number(row.shares ?? 0);
+    const diggs = Number(row.diggs ?? 0);
+    const collects = Number(row.collects ?? 0);
+    const comments = Number(row.comments ?? 0);
+    const plays = Number(row.plays ?? 0);
+    const interactions = shares + diggs + collects + comments;
+    entry.plays += Number(row.plays ?? 0);
+    entry.shares += shares;
+    entry.diggs += diggs;
+    entry.collects += collects;
+    entry.comments += comments;
+    entry.interactions += interactions;
+    entry.engagement = entry.plays > 0 ? (entry.interactions / entry.plays) * 100 : 0;
   });
   return Array.from(map.values()).sort((a, b) => a.date.localeCompare(b.date));
 }
@@ -520,14 +605,36 @@ function updateSummaryCards(totals, totalVideos = 0) {
     diggs: 0,
     collects: 0,
     comments: 0,
+    interactions: 0,
   };
+
+  const engagement = Number(latest.plays) > 0 
+    ? ((Number(latest.interactions) / Number(latest.plays)) * 100).toFixed(2)
+    : 0;
 
   document.getElementById('total-plays').textContent = Number(latest.plays).toLocaleString('es-PE');
   document.getElementById('total-shares').textContent = Number(latest.shares).toLocaleString('es-PE');
   document.getElementById('total-diggs').textContent = Number(latest.diggs).toLocaleString('es-PE');
   document.getElementById('total-collects').textContent = Number(latest.collects).toLocaleString('es-PE');
   document.getElementById('total-comments').textContent = Number(latest.comments).toLocaleString('es-PE');
+  document.getElementById('total-interactions').textContent = Number(latest.interactions).toLocaleString('es-PE');
+  document.getElementById('total-engagement').textContent = `${engagement}%`;
   document.getElementById('total-videos').textContent = Number(totalVideos).toLocaleString('es-PE');
+  syncOverviewMetricCards();
+}
+
+function getOverviewMetricTitle() {
+  const selectedMetrics = getVisibleOverviewMetricKeys();
+
+  if (!selectedOverviewMetrics.size) {
+    return '';
+  }
+
+  if (selectedMetrics.length === 1) {
+    return ` - ${metricLabels[selectedMetrics[0]]}`;
+  }
+
+  return ` - ${selectedMetrics.map(metric => metricLabels[metric]).join(', ')}`;
 }
 
 function calculateCampaignTotals(rows) {
@@ -542,14 +649,22 @@ function calculateCampaignTotals(rows) {
   });
 
   return Array.from(latestPerVideo.values()).reduce(
-    (acc, row) => ({
-      plays: acc.plays + Number(row.plays || 0),
-      shares: acc.shares + Number(row.shares || 0),
-      diggs: acc.diggs + Number(row.diggs || 0),
-      collects: acc.collects + Number(row.collects || 0),
-      comments: acc.comments + Number(row.comments || 0),
-    }),
-    { plays: 0, shares: 0, diggs: 0, collects: 0, comments: 0 }
+    (acc, row) => {
+      const shares = Number(row.shares || 0);
+      const diggs = Number(row.diggs || 0);
+      const collects = Number(row.collects || 0);
+      const comments = Number(row.comments || 0);
+      const interactions = shares + diggs + collects + comments;
+      return {
+        plays: acc.plays + Number(row.plays || 0),
+        shares: acc.shares + shares,
+        diggs: acc.diggs + diggs,
+        collects: acc.collects + collects,
+        comments: acc.comments + comments,
+        interactions: acc.interactions + interactions,
+      };
+    },
+    { plays: 0, shares: 0, diggs: 0, collects: 0, comments: 0, interactions: 0 }
   );
 }
 
@@ -579,7 +694,10 @@ function configureChart(canvasId, dataSets, title) {
           mode: 'index',
           intersect: false,
           callbacks: {
-            label: context => `${context.dataset.label}: ${context.parsed.y.toLocaleString('es-PE')}`,
+            label: context => {
+              const metricKey = context.dataset.metricKey;
+              return `${context.dataset.label}: ${formatChartValue(metricKey, context.parsed.y)}`;
+            },
           },
         },
       },
@@ -598,6 +716,18 @@ function configureChart(canvasId, dataSets, title) {
           beginAtZero: true,
           ticks: {
             callback: value => value.toLocaleString('es-PE'),
+          },
+        },
+        yPercent: {
+          beginAtZero: true,
+          position: 'right',
+          min: 0,
+          max: 100,
+          grid: {
+            drawOnChartArea: false,
+          },
+          ticks: {
+            callback: value => `${value}%`,
           },
         },
       },
@@ -687,8 +817,12 @@ function renderCampaignDashboard() {
   }
 
   videoSelector.disabled = false;
-  const cumulativeDatasets = metricKeys.map(metric => buildDataset(metric, aggregateRows));
-  configureChart('cumulative-chart', cumulativeDatasets);
+  const overviewMetricKeys = getVisibleOverviewMetricKeys();
+  const cumulativeDatasets = overviewMetricKeys.map(metric => metric === 'engagement'
+    ? buildEngagementDataset(aggregateRows)
+    : buildDataset(metric, aggregateRows)
+  );
+  configureChart('cumulative-chart', cumulativeDatasets, `Tendencia acumulada${getOverviewMetricTitle()}`);
 
   renderVideosRanking(summaryRows, false);
 
@@ -727,6 +861,7 @@ function renderCampaignDashboard() {
     {
       label: 'Selecciona un video para ver su trayectoria',
       data: [],
+      metricKey: overviewMetricKeys[0] || '',
       borderColor: 'rgba(148, 163, 184, 0.8)',
       backgroundColor: 'rgba(148, 163, 184, 0.35)',
       tension: 0.25,
@@ -773,14 +908,17 @@ function renderCampaignDashboard() {
     
     const filteredRowsByVideo = visibleRows.filter(row => row.username === selectedUsername && row.url === selectedUrl);
     const grouped = aggregateByDate(filteredRowsByVideo);
-    const datasets = metricKeys.map(metric => buildDataset(metric, grouped));
+    const datasets = getVisibleOverviewMetricKeys().map(metric => metric === 'engagement'
+      ? buildEngagementDataset(grouped)
+      : buildDataset(metric, grouped)
+    );
 
     if (!videoChart) {
       return;
     }
 
     videoChart.data.datasets = datasets;
-    videoChart.options.plugins.title.text = `Video: ${selectedUsername}`;
+    videoChart.options.plugins.title.text = `Video: ${selectedUsername}${getOverviewMetricTitle()}`;
     videoChart.update();
   }
 
@@ -794,6 +932,15 @@ function renderCampaignDashboard() {
   }
 
   videoSelector.onchange = event => updateVideoChart(event.target.value);
+}
+
+function setupOverviewMetricControls() {
+  document.querySelectorAll('[data-overview-metric]').forEach(card => {
+    card.addEventListener('click', () => {
+      applyOverviewMetricSelection(card.dataset.overviewMetric);
+    });
+  });
+  syncOverviewMetricCards();
 }
 
 function showToast(message, type = 'success') {
@@ -968,7 +1115,7 @@ function renderVideosRanking(rows, noMonthSelection = false) {
   if (noMonthSelection) {
     videosRanking.innerHTML = `
       <tr class="text-center py-8">
-        <td colspan="7" class="text-slate-500">Por favor seleccione al menos 1 mes</td>
+        <td colspan="9" class="text-slate-500">Por favor seleccione al menos 1 mes</td>
       </tr>
     `;
     return;
@@ -977,7 +1124,7 @@ function renderVideosRanking(rows, noMonthSelection = false) {
   if (!Array.isArray(rows) || rows.length === 0) {
     videosRanking.innerHTML = `
       <tr class="text-center py-8">
-        <td colspan="7" class="text-slate-500">No hay videos para los meses seleccionados</td>
+        <td colspan="9" class="text-slate-500">No hay videos para los meses seleccionados</td>
       </tr>
     `;
     return;
@@ -1000,6 +1147,10 @@ function renderVideosRanking(rows, noMonthSelection = false) {
     const shares = Number(video.shares || 0).toLocaleString('es-PE');
     const collects = Number(video.collects || 0).toLocaleString('es-PE');
     const comments = Number(video.comments || 0).toLocaleString('es-PE');
+    const interactions = (Number(video.shares || 0) + Number(video.diggs || 0) + Number(video.collects || 0) + Number(video.comments || 0)).toLocaleString('es-PE');
+    const engagement = Number(video.plays || 0) > 0
+      ? (((Number(video.shares || 0) + Number(video.diggs || 0) + Number(video.collects || 0) + Number(video.comments || 0)) / Number(video.plays || 0)) * 100).toFixed(2)
+      : 0;
     const username = video.username || 'Video';
     const rank = index + 1;
 
@@ -1016,6 +1167,8 @@ function renderVideosRanking(rows, noMonthSelection = false) {
           </a>
         </td>
         <td class="text-right py-4 px-4 font-semibold text-slate-900">${plays}</td>
+        <td class="text-right py-4 px-4 font-semibold text-slate-900">${interactions}</td>
+        <td class="text-right py-4 px-4 font-semibold text-slate-900">${engagement}%</td>
         <td class="text-right py-4 px-4 font-semibold text-slate-900">${diggs}</td>
         <td class="text-right py-4 px-4 font-semibold text-slate-900">${shares}</td>
         <td class="text-right py-4 px-4 font-semibold text-slate-900">${collects}</td>
@@ -1023,6 +1176,7 @@ function renderVideosRanking(rows, noMonthSelection = false) {
       </tr>
     `;
   }).join('');
+
 
   document.querySelectorAll('.video-row').forEach(row => {
     row.addEventListener('click', function() {
@@ -1117,6 +1271,7 @@ document.getElementById('video-url-input').addEventListener('keypress', function
 });
 
 window.addEventListener('DOMContentLoaded', async () => {
+  setupOverviewMetricControls();
   await loadCampaignHistory();
 });
 </script>

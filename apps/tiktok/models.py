@@ -2,6 +2,7 @@ from __future__ import annotations
 from core.database import TimeStampMixin, intpk, Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
+from .enums import GenderEnum, PeruDepartmentEnum
 
 
 class RawData(TimeStampMixin, Base):
@@ -16,6 +17,8 @@ class Video(TimeStampMixin, Base):
 
     id: Mapped[intpk] = mapped_column(init=False)
     url: Mapped[str] = mapped_column(unique=True)
+    gender: Mapped[GenderEnum | None]
+    department: Mapped[PeruDepartmentEnum | None]
 
     stats: Mapped[list[VideoStats]] = relationship(
         back_populates="video",
