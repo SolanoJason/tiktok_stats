@@ -17,8 +17,8 @@ class Video(TimeStampMixin, Base):
 
     id: Mapped[intpk] = mapped_column(init=False)
     url: Mapped[str] = mapped_column(unique=True)
-    gender: Mapped[GenderEnum | None]
-    department: Mapped[PeruDepartmentEnum | None]
+    gender: Mapped[GenderEnum | None] = mapped_column(default=None)
+    department: Mapped[PeruDepartmentEnum | None] = mapped_column(default=None)
 
     stats: Mapped[list[VideoStats]] = relationship(
         back_populates="video",
